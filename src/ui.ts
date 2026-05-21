@@ -17,7 +17,7 @@ export function renderIndex(): string {
       --violet: #7357ff;
       --green: #0f9f6e;
       --red: #d8213c;
-      --shadow: 0 22px 60px rgba(38, 75, 128, .16);
+      --shadow: 0 18px 44px rgba(38, 75, 128, .14);
     }
     * { box-sizing: border-box; }
     body {
@@ -30,9 +30,9 @@ export function renderIndex(): string {
         linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%);
     }
     .shell {
-      width: min(1500px, calc(100% - 48px));
-      margin: 34px auto;
-      padding: 54px;
+      width: min(1180px, calc(100% - 40px));
+      margin: 24px auto;
+      padding: 34px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -42,37 +42,38 @@ export function renderIndex(): string {
     header {
       display: grid;
       grid-template-columns: auto 1fr auto;
-      gap: 24px;
+      gap: 18px;
       align-items: center;
     }
     .brand-mark {
-      width: 86px;
-      height: 86px;
+      width: 64px;
+      height: 64px;
       display: grid;
       place-items: center;
       border-radius: 50%;
       background: #fff;
       border: 1px solid var(--line);
-      box-shadow: 0 16px 40px rgba(54, 100, 180, .14);
+      box-shadow: 0 12px 28px rgba(54, 100, 180, .12);
       color: var(--blue);
     }
     h1 {
       margin: 0;
-      font-size: clamp(34px, 4vw, 58px);
-      line-height: 1.05;
+      font-size: clamp(30px, 3vw, 42px);
+      line-height: 1.08;
       letter-spacing: 0;
     }
     .origin {
-      margin-top: 12px;
+      margin-top: 8px;
       color: #53668f;
-      font-size: 21px;
+      font-size: 16px;
       word-break: break-all;
     }
     .status {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 18px;
+      padding: 9px 14px;
+      font-size: 14px;
       border: 1px solid var(--line);
       border-radius: 999px;
       color: #41547c;
@@ -82,7 +83,7 @@ export function renderIndex(): string {
     .rail {
       position: relative;
       height: 22px;
-      margin: 44px 0 0;
+      margin: 30px 0 0;
     }
     .rail::before {
       content: "";
@@ -105,8 +106,8 @@ export function renderIndex(): string {
       box-shadow: 0 0 0 10px rgba(115,87,255,.14);
     }
     .panel {
-      margin-top: 12px;
-      padding: 28px;
+      margin-top: 10px;
+      padding: 22px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.66);
@@ -114,15 +115,15 @@ export function renderIndex(): string {
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px 26px;
+      gap: 18px 20px;
       align-items: end;
     }
     .span { grid-column: 1 / -1; }
     label {
       display: block;
       font-weight: 800;
-      margin-bottom: 10px;
-      font-size: 18px;
+      margin-bottom: 8px;
+      font-size: 15px;
     }
     .label-row {
       display: flex;
@@ -142,13 +143,13 @@ export function renderIndex(): string {
       transition: border-color .15s, box-shadow .15s;
     }
     textarea {
-      min-height: 102px;
-      padding: 16px 18px;
+      min-height: 86px;
+      padding: 13px 15px;
       resize: vertical;
     }
     input, select {
-      height: 58px;
-      padding: 0 18px;
+      height: 48px;
+      padding: 0 14px;
     }
     input:focus, textarea:focus, select:focus {
       border-color: #7da8ff;
@@ -160,7 +161,7 @@ export function renderIndex(): string {
       border: 1px solid var(--line);
       border-radius: 8px;
       overflow: hidden;
-      height: 58px;
+      height: 48px;
       background: #fff;
     }
     .segmented button {
@@ -179,23 +180,23 @@ export function renderIndex(): string {
       display: flex;
       align-items: center;
       gap: 12px;
-      min-height: 58px;
+      min-height: 48px;
       font-weight: 800;
     }
     .checkrow input {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       padding: 0;
     }
     .actions {
       display: grid;
-      grid-template-columns: minmax(180px, 280px) minmax(180px, 240px);
-      gap: 16px;
+      grid-template-columns: minmax(150px, 220px) minmax(150px, 200px);
+      gap: 12px;
       justify-content: end;
       align-items: end;
     }
     button.primary, button.secondary, button.copy {
-      height: 58px;
+      height: 48px;
       border-radius: 8px;
       border: 1px solid var(--line);
       font: inherit;
@@ -203,7 +204,7 @@ export function renderIndex(): string {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       white-space: nowrap;
     }
@@ -211,33 +212,33 @@ export function renderIndex(): string {
       border: 0;
       color: #fff;
       background: linear-gradient(90deg, var(--violet), var(--blue));
-      box-shadow: 0 14px 30px rgba(39,119,255,.18);
+      box-shadow: 0 10px 22px rgba(39,119,255,.16);
     }
     button.secondary, button.copy {
       color: #36517e;
       background: rgba(255,255,255,.74);
     }
     .result {
-      margin-top: 24px;
+      margin-top: 18px;
       display: none;
       grid-template-columns: 1fr auto;
       gap: 14px;
       align-items: center;
     }
     .result input {
-      font-size: 15px;
+      font-size: 14px;
       color: #264066;
     }
     .traffic {
       display: none;
-      margin-top: 16px;
+      margin-top: 14px;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
     }
     .metric {
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 14px;
+      padding: 12px;
       background: rgba(255,255,255,.62);
     }
     .metric span {
@@ -249,11 +250,11 @@ export function renderIndex(): string {
     .metric strong {
       display: block;
       margin-top: 6px;
-      font-size: 18px;
+      font-size: 16px;
       overflow-wrap: anywhere;
     }
     .rules-head {
-      margin-top: 38px;
+      margin-top: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -261,22 +262,22 @@ export function renderIndex(): string {
     }
     .rules-head h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 20px;
       letter-spacing: 0;
     }
     .rules-head small {
       color: #53668f;
       font-weight: 800;
-      font-size: 16px;
+      font-size: 14px;
     }
     .rules {
-      margin-top: 18px;
+      margin-top: 14px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
     .rule {
-      min-height: 52px;
+      min-height: 44px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.7);
@@ -284,7 +285,8 @@ export function renderIndex(): string {
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 0 14px;
+      padding: 0 12px;
+      font-size: 14px;
       font-weight: 850;
     }
     .rule em {
@@ -295,24 +297,24 @@ export function renderIndex(): string {
     .rule em.proxy { color: #075eea; }
     .rule em.reject { color: var(--red); }
     .toast {
-      min-height: 24px;
-      margin-top: 14px;
+      min-height: 22px;
+      margin-top: 12px;
       color: #53668f;
       font-weight: 750;
     }
     .toast.error { color: var(--red); }
     .toast.ok { color: var(--green); }
     @media (max-width: 900px) {
-      .shell { width: min(100% - 24px, 760px); padding: 28px 18px; margin: 14px auto; }
-      header { grid-template-columns: 64px 1fr; }
-      .brand-mark { width: 64px; height: 64px; }
+      .shell { width: min(100% - 20px, 760px); padding: 22px 16px; margin: 10px auto; }
+      header { grid-template-columns: 52px 1fr; }
+      .brand-mark { width: 52px; height: 52px; }
       .status { grid-column: 1 / -1; justify-self: start; }
       .origin { font-size: 16px; }
       .grid, .rules, .traffic { grid-template-columns: 1fr; }
       .actions { grid-template-columns: 1fr; justify-content: stretch; }
       .result { grid-template-columns: 1fr; }
       .segmented { grid-template-columns: 1fr; height: auto; }
-      .segmented button { min-height: 50px; }
+      .segmented button { min-height: 44px; }
     }
   </style>
 </head>
