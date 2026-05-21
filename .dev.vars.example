@@ -1,0 +1,6 @@
+ADMIN_TOKEN=change-me
+SIGNING_SECRET=change-me-too
+XUI_PANEL_URL=https://xui.example.com
+XUI_USERNAME=admin
+XUI_PASSWORD=password
+# XUI_WEB_BASE_PATH=/panel-path

@@ -1,0 +1,22 @@
+name = "xui-sub-rules-worker"
+main = "src/index.ts"
+compatibility_date = "2026-05-21"
+
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "SUB_LINKS"
+id = "replace-with-your-kv-namespace-id"
+preview_id = "replace-with-your-preview-kv-namespace-id"
+
+[vars]
+RULES_BASE_URL = "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release"
+
+# Configure secrets before deploy:
+# wrangler secret put ADMIN_TOKEN
+# wrangler secret put XUI_PANEL_URL
+# wrangler secret put XUI_USERNAME
+# wrangler secret put XUI_PASSWORD
+# Optional:
+# wrangler secret put SIGNING_SECRET
+# wrangler secret put XUI_WEB_BASE_PATH
