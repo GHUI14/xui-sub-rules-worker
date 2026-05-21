@@ -12,11 +12,4 @@ preview_id = "32b8f0f2b21f49df8da179995ee38586"
 [vars]
 RULES_BASE_URL = "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release"
 
-# Configure secrets before deploy:
-# wrangler secret put ADMIN_TOKEN
-# wrangler secret put XUI_PANEL_URL
-# wrangler secret put XUI_USERNAME
-# wrangler secret put XUI_PASSWORD
-# Optional:
-# wrangler secret put SIGNING_SECRET
-# wrangler secret put XUI_WEB_BASE_PATH
+
