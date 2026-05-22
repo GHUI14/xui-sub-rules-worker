@@ -26,7 +26,7 @@ export function renderIndex(): string {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        linear-gradient(120deg, rgba(219,231,255,.9) 0 28%, transparent 28% 100%),
+        linear-gradient(120deg, rgba(219,231,255,.9) 0 50%, transparent 50% 100%),
         linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%);
     }
     .shell {
