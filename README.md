@@ -40,6 +40,7 @@ wrangler secret put XUI_WEB_BASE_PATH
 - `GET /singbox?payload=...&sig=...`
 - `GET /surge?payload=...&sig=...`
 - `GET /sub/:format/:code`
+- `GET /rules/clash/:name.txt`
 - `GET /rules/singbox/:name.json`
 - `GET /rules/surge/:name.txt`
 

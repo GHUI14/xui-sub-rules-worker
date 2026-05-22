@@ -70,6 +70,17 @@ app.get("/rules/singbox/:name.json", async (c) => {
   }
 });
 
+app.get("/rules/clash/:name.txt", async (c) => {
+  try {
+    const text = await fetchLoyalsoldierRule(c.req.param("name"), c.env.RULES_BASE_URL);
+    return textResponse(text, "text/plain; charset=utf-8", {
+      headers: { "cache-control": "public, max-age=86400" }
+    });
+  } catch (error) {
+    return jsonResponse({ error: messageFrom(error) }, { status: 404 });
+  }
+});
+
 app.get("/rules/surge/:name.txt", async (c) => {
   try {
     const text = await fetchLoyalsoldierRule(c.req.param("name"), c.env.RULES_BASE_URL);

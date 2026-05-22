@@ -281,6 +281,7 @@ export function renderIndex(): string {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.7);
+      color: var(--ink);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -288,6 +289,13 @@ export function renderIndex(): string {
       padding: 0 12px;
       font-size: 14px;
       font-weight: 850;
+      text-decoration: none;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
+    }
+    .rule:hover, .rule:focus-visible {
+      border-color: #9bbcff;
+      box-shadow: 0 8px 18px rgba(39,119,255,.1);
+      transform: translateY(-1px);
     }
     .rule em {
       font-style: normal;
@@ -413,7 +421,11 @@ export function renderIndex(): string {
     function drawRules() {
       const mode = $("ruleMode").value;
       const visible = mode === "blacklist" ? rules.filter(([name]) => name !== "applications.txt") : rules;
-      $("rules").innerHTML = visible.map(([name, target]) => '<div class="rule"><span>' + name + '</span><em class="' + target.toLowerCase() + '">' + target + '</em></div>').join("");
+      $("rules").innerHTML = visible.map(([name, target]) => {
+        const baseName = name.replace(/\\.txt$/, "");
+        const href = state.format === "singbox" ? "/rules/singbox/" + baseName + ".json" : state.format === "surge" ? "/rules/surge/" + baseName + ".txt" : "/rules/clash/" + baseName + ".txt";
+        return '<a class="rule" href="' + href + '" target="_blank" rel="noreferrer" title="打开 ' + name + '"><span>' + name + '</span><em class="' + target.toLowerCase() + '">' + target + '</em></a>';
+      }).join("");
       const formatName = state.format === "singbox" ? "Sing-Box" : state.format[0].toUpperCase() + state.format.slice(1);
       $("ruleSummary").textContent = formatName + " · " + (mode === "whitelist" ? "白名单" : "黑名单") + " · " + visible.length + " 个文件";
     }
