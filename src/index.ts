@@ -59,9 +59,9 @@ app.post("/api/xui/lookup", async (c) => {
   }
 });
 
-app.get("/rules/singbox/:name.json", async (c) => {
+app.get("/rules/singbox/:file", async (c) => {
   try {
-    const text = await fetchLoyalsoldierRule(c.req.param("name"), c.env.RULES_BASE_URL);
+    const text = await fetchLoyalsoldierRule(ruleNameFromFile(c.req.param("file")), c.env.RULES_BASE_URL);
     return jsonResponse(convertToSingBoxSource(text), {
       headers: { "cache-control": "public, max-age=86400" }
     });
@@ -70,9 +70,9 @@ app.get("/rules/singbox/:name.json", async (c) => {
   }
 });
 
-app.get("/rules/clash/:name.txt", async (c) => {
+app.get("/rules/clash/:file", async (c) => {
   try {
-    const text = await fetchLoyalsoldierRule(c.req.param("name"), c.env.RULES_BASE_URL);
+    const text = await fetchLoyalsoldierRule(ruleNameFromFile(c.req.param("file")), c.env.RULES_BASE_URL);
     return textResponse(text, "text/plain; charset=utf-8", {
       headers: { "cache-control": "public, max-age=86400" }
     });
@@ -81,9 +81,9 @@ app.get("/rules/clash/:name.txt", async (c) => {
   }
 });
 
-app.get("/rules/surge/:name.txt", async (c) => {
+app.get("/rules/surge/:file", async (c) => {
   try {
-    const text = await fetchLoyalsoldierRule(c.req.param("name"), c.env.RULES_BASE_URL);
+    const text = await fetchLoyalsoldierRule(ruleNameFromFile(c.req.param("file")), c.env.RULES_BASE_URL);
     return textResponse(convertToSurgeRuleSet(text), "text/plain; charset=utf-8", {
       headers: { "cache-control": "public, max-age=86400" }
     });
@@ -159,6 +159,10 @@ function extension(format: OutputFormat): string {
 
 function safeFileName(value: string): string {
   return value.replace(/[\\/:*?"<>|]+/g, "_").slice(0, 80) || "subscription";
+}
+
+function ruleNameFromFile(file: string): string {
+  return file.replace(/\.(txt|json)$/i, "");
 }
 
 function messageFrom(error: unknown): string {
