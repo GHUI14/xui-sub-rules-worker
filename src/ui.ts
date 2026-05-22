@@ -281,13 +281,29 @@ export function renderIndex(): string {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(255,255,255,.7);
+      color: var(--ink);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       padding: 0 12px;
       font-size: 14px;
+      font: inherit;
       font-weight: 850;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
+    }
+    .rule:hover, .rule:focus-visible {
+      border-color: #7da8ff;
+      box-shadow: 0 10px 26px rgba(39,119,255,.12);
+      transform: translateY(-1px);
+      outline: none;
+    }
+    .rule span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .rule em {
       font-style: normal;
@@ -302,6 +318,87 @@ export function renderIndex(): string {
       color: #53668f;
       font-weight: 750;
     }
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(7, 27, 77, .22);
+      backdrop-filter: blur(6px);
+      z-index: 20;
+    }
+    .dialog-backdrop.open { display: grid; }
+    .dialog {
+      width: min(620px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 24px 70px rgba(38, 75, 128, .24);
+      padding: 22px;
+    }
+    .dialog-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+    }
+    .dialog-head h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      display: inline-grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .dialog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #41547c;
+      font-size: 13px;
+      font-weight: 800;
+      background: #fff;
+    }
+    .rule-url {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .dialog-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .rule-preview {
+      margin-top: 14px;
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 12px;
+      color: #243a61;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
     .toast.error { color: var(--red); }
     .toast.ok { color: var(--green); }
     @media (max-width: 900px) {
@@ -315,6 +412,7 @@ export function renderIndex(): string {
       .result { grid-template-columns: 1fr; }
       .segmented { grid-template-columns: 1fr; height: auto; }
       .segmented button { min-height: 44px; }
+      .rule-url, .dialog-actions { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -397,6 +495,28 @@ export function renderIndex(): string {
       <div class="rules" id="rules"></div>
     </section>
   </main>
+  <div class="dialog-backdrop" id="ruleDialog" aria-hidden="true">
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="ruleDialogTitle">
+      <div class="dialog-head">
+        <h3 id="ruleDialogTitle">规则文件</h3>
+        <button type="button" class="icon-button" id="closeRuleDialog" aria-label="关闭"><i data-lucide="x" aria-hidden="true"></i></button>
+      </div>
+      <div class="dialog-meta">
+        <span class="chip" id="ruleDialogFormat">Clash</span>
+        <span class="chip" id="ruleDialogTarget">DIRECT</span>
+        <span class="chip" id="ruleDialogMode">白名单</span>
+      </div>
+      <div class="rule-url">
+        <input id="ruleDialogUrl" readonly />
+        <button type="button" class="copy" id="copyRuleUrl"><i data-lucide="copy" aria-hidden="true"></i>复制</button>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" id="previewRule"><i data-lucide="eye" aria-hidden="true"></i>预览文件</button>
+        <button type="button" class="primary" id="openRule"><i data-lucide="external-link" aria-hidden="true"></i>打开文件</button>
+      </div>
+      <pre class="rule-preview" id="rulePreview">点击预览文件查看前 80 行。</pre>
+    </div>
+  </div>
 
   <script>
     const rules = [
@@ -405,7 +525,7 @@ export function renderIndex(): string {
       ["proxy.txt", "PROXY"], ["direct.txt", "DIRECT"], ["telegramcidr.txt", "PROXY"],
       ["cncidr.txt", "DIRECT"], ["lancidr.txt", "DIRECT"]
     ];
-    const state = { format: "clash" };
+    const state = { format: "clash", activeRule: null };
     const $ = (id) => document.getElementById(id);
     $("origin").textContent = location.origin;
     $("token").value = localStorage.getItem("adminToken") || "";
@@ -413,9 +533,42 @@ export function renderIndex(): string {
     function drawRules() {
       const mode = $("ruleMode").value;
       const visible = mode === "blacklist" ? rules.filter(([name]) => name !== "applications.txt") : rules;
-      $("rules").innerHTML = visible.map(([name, target]) => '<div class="rule"><span>' + name + '</span><em class="' + target.toLowerCase() + '">' + target + '</em></div>').join("");
-      const formatName = state.format === "singbox" ? "Sing-Box" : state.format[0].toUpperCase() + state.format.slice(1);
+      $("rules").innerHTML = visible.map(([name, target]) => '<button type="button" class="rule" data-rule="' + name + '" data-target="' + target + '"><span>' + name + '</span><em class="' + target.toLowerCase() + '">' + target + '</em></button>').join("");
+      const formatName = formatLabel();
       $("ruleSummary").textContent = formatName + " · " + (mode === "whitelist" ? "白名单" : "黑名单") + " · " + visible.length + " 个文件";
+      document.querySelectorAll("[data-rule]").forEach((button) => {
+        button.addEventListener("click", () => openRuleDialog(button.dataset.rule, button.dataset.target));
+      });
+    }
+
+    function formatLabel(format = state.format) {
+      if (format === "singbox") return "Sing-Box";
+      return format[0].toUpperCase() + format.slice(1);
+    }
+
+    function ruleUrl(name, format = state.format) {
+      const base = name.replace(/\.txt$/, "");
+      if (format === "singbox") return location.origin + "/rules/singbox/" + base + ".json";
+      if (format === "surge") return location.origin + "/rules/surge/" + base + ".txt";
+      return location.origin + "/rules/clash/" + base + ".txt";
+    }
+
+    function openRuleDialog(name, target) {
+      state.activeRule = { name, target };
+      $("ruleDialogTitle").textContent = name;
+      $("ruleDialogFormat").textContent = formatLabel();
+      $("ruleDialogTarget").textContent = target;
+      $("ruleDialogMode").textContent = $("ruleMode").value === "whitelist" ? "白名单" : "黑名单";
+      $("ruleDialogUrl").value = ruleUrl(name);
+      $("rulePreview").textContent = "点击预览文件查看前 80 行。";
+      $("ruleDialog").classList.add("open");
+      $("ruleDialog").setAttribute("aria-hidden", "false");
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeRuleDialog() {
+      $("ruleDialog").classList.remove("open");
+      $("ruleDialog").setAttribute("aria-hidden", "true");
     }
 
     function payload() {
@@ -476,6 +629,33 @@ export function renderIndex(): string {
       });
     });
     $("ruleMode").addEventListener("change", drawRules);
+    $("closeRuleDialog").addEventListener("click", closeRuleDialog);
+    $("ruleDialog").addEventListener("click", (event) => {
+      if (event.target === $("ruleDialog")) closeRuleDialog();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeRuleDialog();
+    });
+    $("openRule").addEventListener("click", () => {
+      if (!state.activeRule) return;
+      window.open(ruleUrl(state.activeRule.name), "_blank", "noopener,noreferrer");
+    });
+    $("copyRuleUrl").addEventListener("click", async () => {
+      await navigator.clipboard.writeText($("ruleDialogUrl").value);
+      toast("规则链接已复制", "ok");
+    });
+    $("previewRule").addEventListener("click", async () => {
+      if (!state.activeRule) return;
+      $("rulePreview").textContent = "正在读取规则文件...";
+      try {
+        const response = await fetch(ruleUrl(state.activeRule.name));
+        if (!response.ok) throw new Error("规则文件读取失败: " + response.status);
+        const text = await response.text();
+        $("rulePreview").textContent = text.split("\n").slice(0, 80).join("\n") || "文件为空";
+      } catch (error) {
+        $("rulePreview").textContent = error.message;
+      }
+    });
     $("lookup").addEventListener("click", async () => {
       const { token, body } = payload();
       try {
